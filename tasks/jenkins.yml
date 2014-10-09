@@ -1,0 +1,26 @@
+---
+# The playbook for Jenkins tasks
+
+- name: Add jenkins apt-key
+  apt_key: url=https://jenkins-ci.org/debian/jenkins-ci.org.key state=present
+  tags: jenkins
+
+- name: Add Jenkins repository
+  apt_repository: repo='deb http://pkg.jenkins-ci.org/debian binary/' state=present update_cache=yes
+  tags: jenkins
+
+- name: Install Jenkins package
+  apt: pkg=jenkins state=latest  
+  tags: jenkins
+
+- name: Wait for Jenkins startup
+  wait_for: port=8080 state=started
+  tags: jenkins
+
+- name: Create Jenkins CLI destination directory
+  file: path=/usr/share/jenkins-cli state=directory
+  tags: jenkins
+
+- name: Get Jenkins CLI
+  get_url: url=http://localhost:8080/jnlpJars/jenkins-cli.jar dest=/usr/share/jenkins-cli mode=0440
+  tags: jenkins

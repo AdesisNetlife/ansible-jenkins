@@ -1,0 +1,54 @@
+---
+
+- name: Get latest Jenkins update file
+  get_url: url=http://updates.jenkins-ci.org/update-center.json dest=/usr/share/jenkins/updates_jenkins.json thirsty=yes mode=0440
+  register: jenkins_updates
+  tags: 
+    - jenkins
+    - jenkins-update
+
+- name: Update-center Jenkins
+  action: "shell cat /usr/share/jenkins/updates_jenkins.json | sed '1d;$d' | curl -X POST -H 'Accept: application/json' -d @- http://localhost:8080/updateCenter/byId/default/postBack"
+  when: jenkins_updates.changed
+  notify: restart jenkins
+  tags: 
+    - jenkins
+    - jenkins-update
+
+- name: List Jenkins plugins
+  action: shell java -jar /usr/share/jenkins-cli/jenkins-cli.jar -s http://localhost:8080 list-plugins | cut -f 1 -d ' '
+  when: jenkins.plugins is defined
+  register: plugins_installed
+  tags: 
+    - jenkins
+    - jenkins-update
+
+- name: Install/update Jenkins plugins
+  command: java -jar /usr/share/jenkins-cli/jenkins-cli.jar -s http://localhost:8080 install-plugin {{ item }}
+  when: "plugins_installed.changed and plugins_installed.stdout.find('{{ item }}') == -1"
+  with_items: jenkins.plugins
+  notify: restart jenkins
+  tags: 
+    - jenkins
+    - jenkins-update
+
+- name: List Jenkins plugins to be updated
+  shell: java -jar /usr/share/jenkins-cli/jenkins-cli.jar -s http://localhost:8080 list-plugins | grep ')$' | cut -f 1 -d ' ' | sed ':a;N;$!ba;s/\n/ /g'
+  register: plugins_updates
+  tags: 
+    - jenkins
+    - jenkins-update
+
+- name: Update Jenkins plugins
+  command: java -jar /usr/share/jenkins-cli/jenkins-cli.jar -s http://localhost:8080 install-plugin {{ plugins_updates.stdout }}
+  when: plugins_updates.stdout != ''
+  notify: restart jenkins
+  tags: 
+    - jenkins
+    - jenkins-update
+
+- name: Wait for Jenkins startup
+  wait_for: port=8080 state=started
+  tags: 
+    - jenkins
+    - jenkins-update 
