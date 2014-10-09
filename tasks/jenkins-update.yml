@@ -46,9 +46,3 @@
   tags: 
     - jenkins
     - jenkins-update
-
-- name: Wait for Jenkins startup
-  wait_for: port=8080 state=started
-  tags: 
-    - jenkins
-    - jenkins-update 

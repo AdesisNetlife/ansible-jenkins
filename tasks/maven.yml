@@ -18,11 +18,11 @@
   tags: maven 
 
 - name: Set M2 environment variable
-  lineinfile: dest=/etc/environment regexp='^M2=.*' line='M2=$M2_HOME/bin' insertafter='^export M2_HOME.*'
+  lineinfile: dest=/etc/environment regexp='^M2=.*' line='M2=/usr/local/maven/bin' insertafter='^M2_HOME.*'
   tags: maven   
 
 - name: Set MAVEN_OPTS environment variable
-  lineinfile: dest=/etc/environment regexp='^MAVEN_OPTS.*' line='MAVEN_OPTS="-Xms256m -Xmx512m"' insertafter='^export M2\\=.*'
+  lineinfile: dest=/etc/environment regexp='^MAVEN_OPTS=.*' line='MAVEN_OPTS="-Xms256m -Xmx512m"' insertafter='^M2.*'
   tags: maven     
 
 - name: Add Maven binaries to PATH environment variable

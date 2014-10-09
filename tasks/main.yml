@@ -54,4 +54,6 @@
 
 - include: jenkins-update.yml
   sudo: yes
-  tags: jenkins-update  
+  tags: 
+    - jenkins
+    - jenkins-update  

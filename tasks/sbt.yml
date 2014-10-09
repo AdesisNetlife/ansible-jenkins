@@ -18,7 +18,7 @@
   tags: sbt 
 
 - name: Set SBT_OPTS environment variable
-  lineinfile: dest=/etc/environment regexp='^SBT_OPTS.*' line='SBT_OPTS="-Xms512M -Xmx1536M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M"' insertafter='^export SBT_HOME\\=.*'
+  lineinfile: dest=/etc/environment regexp='^SBT_OPTS.*' line='SBT_OPTS="-Xms512M -Xmx1536M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M"' insertafter='^SBT_HOME.*'
   tags: sbt
 
 - name: Add SBT binaries to PATH environment variable

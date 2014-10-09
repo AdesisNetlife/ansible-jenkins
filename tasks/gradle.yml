@@ -18,7 +18,7 @@
   tags: gradle   
 
 - name: Set GRADLE_OPTS environment variable
-  lineinfile: dest=/etc/environment regexp='^GRADLE_OPTS.*' line='GRADLE_OPTS="-Xms256m -Xmx512m"' insertafter='^export GRADLE_HOME\\=.*'
+  lineinfile: dest=/etc/environment regexp='^GRADLE_OPTS.*' line='GRADLE_OPTS="-Xms256m -Xmx512m"' insertafter='^GRADLE_HOME.*'
   tags: gradle    
 
 - name: Add Gradle binaries to PATH environment variable

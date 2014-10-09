@@ -11,10 +11,12 @@
 
 - name: Install Jenkins package
   apt: pkg=jenkins state=latest  
+  register: jenkins_install
   tags: jenkins
 
 - name: Wait for Jenkins startup
-  wait_for: port=8080 state=started
+  wait_for: port=8080 delay=15
+  when: jenkins_install.changed
   tags: jenkins
 
 - name: Create Jenkins CLI destination directory
