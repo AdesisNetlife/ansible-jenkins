@@ -11,3 +11,7 @@
 - name: restart jenkins
   command: java -jar /usr/share/jenkins-cli/jenkins-cli.jar -s http://localhost:8080 safe-restart
   sudo: yes
+
+- name: restart docker
+  service: name=docker.io state=restarted
+  sudo: yes
